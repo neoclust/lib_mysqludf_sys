@@ -1,26 +1,26 @@
-/* 
+/*
 	lib_mysqludf_sys - a library with miscellaneous (operating) system level functions
-	Copyright (C) 2007  Roland Bouman 
+	Copyright (C) 2007  Roland Bouman
 	Copyright (C) 2008-2009  Roland Bouman and Bernardo Damele A. G.
 	web: http://www.mysqludf.org/
 	email: mysqludfs@gmail.com, bernardo.damele@gmail.com
-	
+
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
 	License as published by the Free Software Foundation; either
 	version 2.1 of the License, or (at your option) any later version.
-	
+
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 	Lesser General Public License for more details.
-	
+
 	You should have received a copy of the GNU Lesser General Public
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #if defined(_WIN32) || defined(_WIN64) || defined(__WIN32__) || defined(WIN32)
-#define DLLEXP __declspec(dllexport) 
+#define DLLEXP __declspec(dllexport)
 #else
 #define DLLEXP
 #endif
@@ -57,22 +57,22 @@ extern "C" {
 #ifdef __WIN__
 #define SETENV(name,value)		SetEnvironmentVariable(name,value);
 #else
-#define SETENV(name,value)		setenv(name,value,1);		
+#define SETENV(name,value)		setenv(name,value,1);
 #endif
 
-DLLEXP 
+DLLEXP
 my_bool lib_mysqludf_sys_info_init(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
 ,	char *message
 );
 
-DLLEXP 
+DLLEXP
 void lib_mysqludf_sys_info_deinit(
 	UDF_INIT *initid
 );
 
-DLLEXP 
+DLLEXP
 char* lib_mysqludf_sys_info(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
@@ -84,22 +84,22 @@ char* lib_mysqludf_sys_info(
 
 /**
  * sys_get
- * 
+ *
  * Gets the value of the specified environment variable.
  */
-DLLEXP 
+DLLEXP
 my_bool sys_get_init(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
 ,	char *message
 );
 
-DLLEXP 
+DLLEXP
 void sys_get_deinit(
 	UDF_INIT *initid
 );
 
-DLLEXP 
+DLLEXP
 char* sys_get(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
@@ -111,25 +111,25 @@ char* sys_get(
 
 /**
  * sys_set
- * 
+ *
  * Sets the value of the environment variables.
  * This function accepts a set of name/value pairs
  * which are then set as environment variables.
- * Use sys_get to retrieve the value of such a variable 
+ * Use sys_get to retrieve the value of such a variable
  */
-DLLEXP 
+DLLEXP
 my_bool sys_set_init(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
 ,	char *message
 );
 
-DLLEXP 
+DLLEXP
 void sys_set_deinit(
 	UDF_INIT *initid
 );
 
-DLLEXP 
+DLLEXP
 long long sys_set(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
@@ -139,23 +139,23 @@ long long sys_set(
 
 /**
  * sys_exec
- * 
+ *
  * executes the argument commandstring and returns its exit status.
  * Beware that this can be a security hazard.
  */
-DLLEXP 
+DLLEXP
 my_bool sys_exec_init(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
 ,	char *message
 );
 
-DLLEXP 
+DLLEXP
 void sys_exec_deinit(
 	UDF_INIT *initid
 );
 
-DLLEXP 
+DLLEXP
 my_ulonglong sys_exec(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
@@ -165,23 +165,23 @@ my_ulonglong sys_exec(
 
 /**
  * sys_eval
- * 
+ *
  * executes the argument commandstring and returns its standard output.
  * Beware that this can be a security hazard.
  */
-DLLEXP 
+DLLEXP
 my_bool sys_eval_init(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
 ,	char *message
 );
 
-DLLEXP 
+DLLEXP
 void sys_eval_deinit(
 	UDF_INIT *initid
 );
 
-DLLEXP 
+DLLEXP
 char* sys_eval(
 	UDF_INIT *initid
 ,	UDF_ARGS *args
@@ -246,7 +246,7 @@ my_bool sys_get_init(
 		strcpy(
 			message
 		,	"Expected exactly one string type parameter"
-		);		
+		);
 		return 1;
 	}
 }
@@ -267,7 +267,7 @@ char* sys_get(
 		*is_null = 1;
 	} else {
 		*length = strlen(value);
-	} 
+	}
 	return value;
 }
 
@@ -280,14 +280,14 @@ my_bool sys_set_init(
 		strcpy(
 			message
 		,	"Expected exactly two arguments"
-		);		
+		);
 		return 1;
 	}
 	if(args->arg_type[0]!=STRING_RESULT){
 		strcpy(
 			message
 		,	"Expected string type for name parameter"
-		);		
+		);
 		return 1;
 	}
 	args->arg_type[1]=STRING_RESULT;
@@ -300,9 +300,9 @@ my_bool sys_set_init(
 		strcpy(
 			message
 		,	"Could not allocate memory"
-		);		
+		);
 		return 1;
-	}	
+	}
 	return 0;
 }
 void sys_set_deinit(
@@ -317,9 +317,9 @@ long long sys_set(
 ,	UDF_ARGS *args
 ,	char *is_null
 ,	char *error
-){	
+){
 	char *name = initid->ptr;
-	char *value = name + args->lengths[0] + 1; 
+	char *value = name + args->lengths[0] + 1;
 	memcpy(
 		name
 	,	args->args[0]
@@ -332,7 +332,7 @@ long long sys_set(
 	,	args->lengths[1]
 	);
 	*(value + args->lengths[1]) = '\0';
-	return SETENV(name,value);		
+	return SETENV(name,value);
 }
 
 my_bool sys_exec_init(
@@ -348,7 +348,7 @@ my_bool sys_exec_init(
 		strcpy(
 			message
 		,	"Expected exactly one string type parameter"
-		);		
+		);
 		return 1;
 	}
 }
@@ -378,7 +378,7 @@ my_bool sys_eval_init(
 		strcpy(
 			message
 		,	"Expected exactly one string type parameter"
-		);		
+		);
 		return 1;
 	}
 }
