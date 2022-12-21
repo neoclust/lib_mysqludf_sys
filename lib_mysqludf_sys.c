@@ -27,6 +27,7 @@
 
 #ifdef STANDARD
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #ifdef __WIN__
@@ -37,12 +38,11 @@ typedef unsigned long long ulonglong;
 typedef long long longlong;
 #endif /*__WIN__*/
 #else
-#include <my_global.h>
 #include <my_sys.h>
 #endif
 #include <mysql.h>
-#include <m_ctype.h>
-#include <m_string.h>
+#include <mariadb_ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <ctype.h>
